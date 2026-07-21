@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx playwright *)",
+      "Bash(node \"C:\\\\Users\\\\diwaa\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-diwaa-project-ib\\\\440460e8-0b4d-4e2d-a42c-cd3e52425a32\\\\scratchpad\\\\probe13.js\")",
+      "PowerShell(npx playwright test tests/StockAdjustment-OS.spec.js --headed --reporter=list)"
+    ]
+  }
+}

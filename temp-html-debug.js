@@ -1,0 +1,25 @@
+const { chromium } = require('playwright');
+const fs = require('fs');
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto('https://ib-tst.outsystemsenterprise.com/InternationalBearings/DummyLogin');
+  await page.getByPlaceholder('Search for Company(Tenant)').fill('IBSG');
+  await page.getByText('IB Singapore(IBSG)').click();
+  const row = page.locator('tr', { hasText: 'IB Singapore' }).first();
+  await row.getByText('Click to login').click();
+  await page.waitForURL(/MainEnquiry/);
+  await page.goto('https://ib-tst.outsystemsenterprise.com/InternationalBearings/Warehouse');
+  await page.getByRole('link', { name: 'Stock Adjustment' }).click();
+  await page.getByText('Process Stock Adjustment').click();
+  await page.waitForLoadState('networkidle');
+  const body = await page.innerHTML('body');
+  fs.writeFileSync('temp-stock-adjustment-body.html', body, 'utf8');
+  console.log('SearchItem:', body.includes('Search Item'));
+  console.log('Search item code:', body.includes('Search item code'));
+  console.log('Search brand code:', body.includes('Search brand code'));
+  console.log('Search Item placeholder:', body.includes('placeholder="Search Item"'));
+  console.log('Search item code placeholder:', body.includes('placeholder="Search item code"'));
+  console.log('Search branch placeholder:', body.includes('placeholder="Search branch"'));
+  await browser.close();
+})();
