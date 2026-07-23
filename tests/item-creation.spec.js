@@ -1,10 +1,10 @@
 const { test } = require('@playwright/test');
-const { login } = require('../utils/login');
-const { createItem } = require('../utils/createItem');
+const { login } = require('../workflows/login');
+const { createItem } = require('../workflows/createitem');
 
 test.use({
   storageState: undefined,
-  contextOptions: { javaScriptEnabled: true },
+  // contextOptions: { javaScriptEnabled: true },
 });
 
 test('Verify user can create an item', async ({ page }) => {

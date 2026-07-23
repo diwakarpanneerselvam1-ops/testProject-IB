@@ -33,6 +33,9 @@ export default defineConfig({
     // Launch browser in headed mode
     headless: false,
 
+    // Base URL for relative navigation
+    baseURL: 'https://ib-tst.outsystemsenterprise.com/InternationalBearings',
+
     // Global timeout for Playwright actions
     actionTimeout: 30_000,
 

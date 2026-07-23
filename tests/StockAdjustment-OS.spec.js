@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
-const { login } = require('../utils/login');
-const { createItem } = require('../utils/createItem');
+const { login } = require('../workflows/login');
+const { createItem } = require('../workflows/createItem');
 
 const BASE_URL = 'https://ib-tst.outsystemsenterprise.com/InternationalBearings';
 const STOCK_ADJUSTMENT_LIST_URL = `${BASE_URL}/StockAdjustment?InventoryDocumentId=0`;

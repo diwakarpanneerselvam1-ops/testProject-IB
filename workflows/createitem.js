@@ -1,5 +1,4 @@
 const { expect } = require('@playwright/test');
-const { login } = require('../utils/login');
 
 /**
  * Creates a new item in the International Bearings app and verifies it.
