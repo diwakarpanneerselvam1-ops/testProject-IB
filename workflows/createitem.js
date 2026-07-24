@@ -1,4 +1,6 @@
 const { expect } = require('@playwright/test');
+const ItemPage = require('../PageObjects/ItemPage');
+const RandomData = require('../utils/RandomData');
 
 /**
  * Creates a new item in the International Bearings app and verifies it.
@@ -8,67 +10,46 @@ const { expect } = require('@playwright/test');
  * 
  */
 
-
-
 async function createItem(page) {
-  const itemCodeValue = `UPLOAD${Date.now().toString().slice(-6)}`;
 
-const selectadmin = page.locator('#b2-admin');
-await page.waitForLoadState('networkidle');
-  await selectadmin.click();
-  // await expect(selectadmin).toBeChecked();
+  const itemPage = new ItemPage(page); // Create an instance of the ItemPage class
+  const itemCode = RandomData.itemCode(); // Generate a random item code
 
-  // // Navigate to the Administration module
-  // await page.goto('https://ib-tst.outsystemsenterprise.com/InternationalBearings_Admin/Users');
-  // await expect(page.getByText('ADMINISTRATION', { exact: true })).toBeVisible();
 
-  // Navigate to Products > Item
-  await page.getByText('Products', { exact: true }).click();
-  await page.getByText('Item', { exact: true }).click();
+  // Navigate to the Administration module
 
-  // Enable the Trade toggle
-  // const tradeToggle = page.locator('#b8-Switch4');
-  // await tradeToggle.click();
-  //  await page.waitForLoadState('networkidle');
-  //  await expect(tradeToggle).toBeChecked();
-
-  // Open the Create Item page
-  await page.getByText('Create Item', { exact: true }).click();
-  await page.waitForLoadState('networkidle');
-
+ await itemPage.openCreateItemPage();
+  
   // Enter the Item Code
-  const itemCode = page.locator('#b12-Input_ItemCode');
-  await itemCode.fill(itemCodeValue);
-  await expect(itemCode).toHaveValue(new RegExp(itemCodeValue));
+  
+  await itemPage.enterItemCode(itemCode);
+  await itemPage.verifyItemCode(itemCode);
 
   // Select an Item Description (Group)
-  await page.locator('#b12-ItemGroup .vscomp-toggle-button').click();
-  await page.locator('#b12-ItemGroup .vscomp-option').first().click();
-  await expect(itemCode).toHaveValue(new RegExp(itemCodeValue, 'i'));
+
+await itemPage.selectItemGroup();
 
   // Select Brand as FBJ
-  const brandSelect = page.locator('#b12-ItemBrand');
-  await brandSelect.selectOption({ label: 'FBJ' });
-  await expect(brandSelect).toHaveValue('12');
 
-  const selectedLabel = await brandSelect.evaluate(el => el.options[el.selectedIndex].text);
-  expect(selectedLabel).toBe('FBJ');
+  await itemPage.selectBrand('FBJ');
+
+  await itemPage.verifyBrand('FBJ');
+
 
   // Save the Item
-  await page.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByText('Item successfully Created!')).toBeVisible();
-  console.log(`✅ Item '${itemCodeValue}' Successfully created`);
+
+  await itemPage.clickSave();
 
   // Verify in Main Enquiry
-  await page.goto('https://ib-tst.outsystemsenterprise.com/InternationalBearings/MainEnquiry?IsF8Mode=false');
-  await page.getByPlaceholder('Search Item Here').fill(itemCodeValue);
-  await page.getByPlaceholder('Search Item Here').press('Enter');
+  
+  await itemPage.verifyItemCreated(); // Verify the success message is displayed
 
-  await expect(page.getByText(itemCodeValue, { exact: true })).toBeVisible();
-  await expect(page.getByText('FBJ', { exact: true }).first()).toBeVisible();
-  console.log(`✅ Item '${itemCodeValue}' found successfully in Main Enquiry`);
+  await itemPage.verifyItemInMainEnquiry(itemCode,'FBJ'   );
 
-  return itemCodeValue;
+  console.log(`✅ Item '${itemCode}' created successfully`);
+
+  return itemCode; //
+
 }
 
 module.exports = { createItem };
